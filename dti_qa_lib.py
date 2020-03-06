@@ -224,6 +224,8 @@ def outcount(input_image, mask_image):
         outcount_array = numpy.array(call_output.split(), dtype=int)
         outcount_mean = outcount_array.mean()
         outcount_max = outcount_array.max()
+        outcount_max_index = numpy.argmax(outcount_array)
+        outcount_max_volume = outcount_max_index+1
 
     except:
         logging.error('ERROR: 3dToutcount failed!')
@@ -231,7 +233,7 @@ def outcount(input_image, mask_image):
 
     logging.info('Outlier count calculation successful.')
     logging.info('-------Done: outcount-------')
-    return outcount_mean, outcount_max
+    return outcount_mean, outcount_max, outcount_max_volume
 
 
 def motion_correct(input_image, base_image, output_image, overwrite=1):
@@ -503,11 +505,12 @@ def qa_the_dti(sub, dti_image, mask_image, shell_index_file, output_dir, overwri
 
                 ##Extract outlier metrics##
                 #Use 3dToutcount on the shell image
-                outcount_mean, outcount_max = outcount(shell_image, mask_image)
+                outcount_mean, outcount_max, outcount_max_volume = outcount(shell_image, mask_image)
 
                 #Save the outcount mean and max to the working dictionary
                 metric_dict[shell_label]['outcount_mean'] = outcount_mean
                 metric_dict[shell_label]['outcount_max'] = outcount_max
+                metric_dict[shell_label]['outcount_max_volume'] = outcount_max_volume
 
                 ##Extract motion metrics##
                 #Create motion correction files
@@ -529,11 +532,11 @@ def qa_the_dti(sub, dti_image, mask_image, shell_index_file, output_dir, overwri
                 tsnr = ave_tsnr(tsnr_image, mask_image)
                 metric_dict[shell_label]['tsnr_mean'] = tsnr
 
-        header_line = 'sub,shell,outcount_mean,outcount_max,maxdisp,tsnr_mean'
+        header_line = 'sub,shell,outcount_mean,outcount_max,outcount_max_volume,maxdisp,tsnr_mean'
         lines_to_write = []
         lines_to_write.append(header_line)
         for key in metric_dict.keys():
-            new_line = '{},{},{},{},{},{}'.format(sub,key,metric_dict[key]['outcount_mean'],metric_dict[key]['outcount_max'],metric_dict[key]['maxdisp'],metric_dict[key]['tsnr_mean'])
+            new_line = '{},{},{},{},{},{},{}'.format(sub,key,metric_dict[key]['outcount_mean'],metric_dict[key]['outcount_max'],metric_dict[key]['outcount_max_volume'],metric_dict[key]['maxdisp'],metric_dict[key]['tsnr_mean'])
             lines_to_write.append(new_line)
         logging.info('Writing output file: {}'.format(output_file))
         with open(output_file, 'w') as fid:
