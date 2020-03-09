@@ -538,7 +538,7 @@ def qa_the_dti(sub, dti_image, mask_image, shell_index_file, output_dir, overwri
         lines_to_write = []
         lines_to_write.append(header_line)
         for key in metric_dict.keys():
-            new_line = '{},{},{},{},{},{},{}'.format(sub,key,metric_dict[key]['outcount_mean'],metric_dict[key]['outcount_max'],metric_dict[key]['outcount_max_volume'],metric_dict[key]['maxdisp'],metric_dict[key]['maxdisp_volume'],metric_dict[key]['tsnr_mean'])
+            new_line = '{},{},{},{},{},{},{},{}'.format(sub,key,metric_dict[key]['outcount_mean'],metric_dict[key]['outcount_max'],metric_dict[key]['outcount_max_volume'],metric_dict[key]['maxdisp'],metric_dict[key]['maxdisp_volume'],metric_dict[key]['tsnr_mean'])
             lines_to_write.append(new_line)
         logging.info('Writing output file: {}'.format(output_file))
         with open(output_file, 'w') as fid:
