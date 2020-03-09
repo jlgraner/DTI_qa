@@ -521,7 +521,9 @@ def qa_the_dti(sub, dti_image, mask_image, shell_index_file, output_dir, overwri
                 with open(maxdisp_file, 'r') as fid:
                     maxdisp_contents = fid.read()
                 maxdisp_array = numpy.array(maxdisp_contents.split('\n ')[1:], dtype=float)
+                motcor_maxdisp_volume = numpy.argmax(maxdisp_array)+1
                 metric_dict[shell_label]['maxdisp'] = maxdisp_array.max()
+                metric_dict[shell_label]['maxdisp_volume'] = motcor_maxdisp_volume
 
                 ##Extract TSNR metrics
                 #Create a 3D voxel-wise TSNR image
@@ -532,11 +534,11 @@ def qa_the_dti(sub, dti_image, mask_image, shell_index_file, output_dir, overwri
                 tsnr = ave_tsnr(tsnr_image, mask_image)
                 metric_dict[shell_label]['tsnr_mean'] = tsnr
 
-        header_line = 'sub,shell,outcount_mean,outcount_max,outcount_max_volume,maxdisp,tsnr_mean'
+        header_line = 'sub,shell,outcount_mean,outcount_max,outcount_max_volume,maxdisp,maxdisp_volume,tsnr_mean'
         lines_to_write = []
         lines_to_write.append(header_line)
         for key in metric_dict.keys():
-            new_line = '{},{},{},{},{},{},{}'.format(sub,key,metric_dict[key]['outcount_mean'],metric_dict[key]['outcount_max'],metric_dict[key]['outcount_max_volume'],metric_dict[key]['maxdisp'],metric_dict[key]['tsnr_mean'])
+            new_line = '{},{},{},{},{},{},{}'.format(sub,key,metric_dict[key]['outcount_mean'],metric_dict[key]['outcount_max'],metric_dict[key]['outcount_max_volume'],metric_dict[key]['maxdisp'],metric_dict[key]['maxdisp_volume'],metric_dict[key]['tsnr_mean'])
             lines_to_write.append(new_line)
         logging.info('Writing output file: {}'.format(output_file))
         with open(output_file, 'w') as fid:
