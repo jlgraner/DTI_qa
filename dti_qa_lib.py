@@ -225,7 +225,7 @@ def outcount(input_image, mask_image):
         outcount_mean = outcount_array.mean()
         outcount_max = outcount_array.max()
         outcount_max_index = numpy.argmax(outcount_array)
-        outcount_max_volume = outcount_max_index+1
+        outcount_max_volume = outcount_max_index
 
     except:
         logging.error('ERROR: 3dToutcount failed!')
@@ -521,7 +521,7 @@ def qa_the_dti(sub, dti_image, mask_image, shell_index_file, output_dir, overwri
                 with open(maxdisp_file, 'r') as fid:
                     maxdisp_contents = fid.read()
                 maxdisp_array = numpy.array(maxdisp_contents.split('\n ')[1:], dtype=float)
-                motcor_maxdisp_volume = numpy.argmax(maxdisp_array)+1
+                motcor_maxdisp_volume = numpy.argmax(maxdisp_array)
                 metric_dict[shell_label]['maxdisp'] = maxdisp_array.max()
                 metric_dict[shell_label]['maxdisp_volume'] = motcor_maxdisp_volume
 
